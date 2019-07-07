@@ -1,0 +1,81 @@
+ <!DOCTYPE html>
+ <html>
+   <head>
+     <meta charset="utf-8">
+     <title>{{ context.title }}</title>
+     <style>
+       #map-canvas {
+         height: 550px;
+         weight: 100%
+       }
+     </style>
+	<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+ </head>
+ <body> 
+<div>
+<table border = 1>
+         {% for key, value in result.items() %}
+            <tr>
+               <td> {{ key }} </td>
+               <td> {{ value }} </td>
+            </tr>
+         {% endfor %}
+      </table>
+</div>
+    <div id="map-canvas"></div>
+   <div id="elevation_chart">{{ map.altitude_svg|safe }}</div>
+   <script>
+   function showMap() {
+     var path = [{{ map.google_coordinates }}];
+     var center = new google.maps.LatLng({{ map.center[0] }}, {{ map.center[1]  }});
+     var zoom = {{ map.zoom }};
+
+     map = new google.maps.Map(document.getElementById("map-canvas"), {
+         zoom: zoom,	
+         center: center
+        });
+
+     var activity_route = new google.maps.Polyline({
+         path: path,
+         geodesic: true,
+         strokeColor: '#550FFF',
+         strokeOpacity: 1.0,
+         strokeWeight: 3,
+         map: map
+     });
+
+     var start = new google.maps.Marker({
+        position: path[0],
+        map: map,
+        label: 'S',
+        fillColor:'green'
+     });
+
+     var end = new google.maps.Marker({
+        position: path[path.length-1],
+        map: map,
+        label: 'E'
+      });
+   }
+   </script>
+   <script async
+       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAH7Ry7itIBQk1NU0nb4bnEeW-_nk7OLOA&v=3.31&use_slippy=true&callback=showMap">
+   </script> 
+ </body>
+ </html>
